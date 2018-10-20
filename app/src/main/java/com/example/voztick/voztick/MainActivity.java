@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     Socket socket;
     final int recordCode=0;
     private TextView command;
+    Intent i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,13 +40,15 @@ public class MainActivity extends AppCompatActivity {
         }
         command= (TextView) findViewById(R.id.commandText);
         mic=(ImageButton) findViewById(R.id.micBtn);
+
+        i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        i.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS , 10);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        i.putExtra(RecognizerIntent.EXTRA_PROMPT,"Fale");
         mic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-                i.putExtra(RecognizerIntent.EXTRA_PROMPT,"Say something");
                 try {
                     startActivityForResult(i, recordCode);
                 }catch (ActivityNotFoundException e){
