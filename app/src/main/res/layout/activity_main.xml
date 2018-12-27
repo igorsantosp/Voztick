@@ -30,4 +30,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@android:drawable/presence_audio_away" />
 
+    <Button
+        android:id="@+id/bluetoothBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BT"
+        tools:layout_editor_absoluteX="6dp"
+        tools:layout_editor_absoluteY="32dp" />
+
 </android.support.constraint.ConstraintLayout>

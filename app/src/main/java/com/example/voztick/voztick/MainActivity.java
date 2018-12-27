@@ -1,18 +1,22 @@
 package com.example.voztick.voztick;
 
 import android.annotation.TargetApi;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -27,6 +31,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     ImageButton mic ;
     int result;
+    Button bluetoothBtn;
     Socket socket;
     final int recordCode=0;
     private TextView command;
@@ -40,12 +45,16 @@ public class MainActivity extends AppCompatActivity {
         }
         command= (TextView) findViewById(R.id.commandText);
         mic=(ImageButton) findViewById(R.id.micBtn);
-
+        final BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
+        bluetoothBtn= (Button) findViewById(R.id.bluetoothBtn);
         i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        i.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS , 10);
+        i.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS , 1);
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        i.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE,true);
         i.putExtra(RecognizerIntent.EXTRA_PROMPT,"Fale");
+        i.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS,true);
+        i.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
         mic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             case recordCode:
                 if(resultCode==RESULT_OK && data!= null){
                     ArrayList<String> texto = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    command.setText(texto.get(0));
+                    //command.setText(texto.get(0));
                     /*URL url;
                     HttpURLConnection urlConnection = null;
                     try {
@@ -90,14 +99,21 @@ public class MainActivity extends AppCompatActivity {
                             urlConnection.disconnect();
                         }
                     }*/
-                    if(texto.get(0).equals("ligar 1")||texto.get(0).equals("ligar um"))
-                        new GetMethodDemo().execute("http://192.168.4.1/led/red/on");
-                   else if(texto.get(0).equals("desligar 1")||texto.get(0).equals("desligar um"))
-                        new GetMethodDemo().execute("http://192.168.4.1/led/red/off");
-                   else if(texto.get(0).equals("ligar 2")||texto.get(0).equals("ligar dois"))
-                        new GetMethodDemo().execute("http://192.168.4.1/led/yellow/on");
-                   else if(texto.get(0).equals("desligar 2")||texto.get(0).equals("desligar dois"))
-                        new GetMethodDemo().execute("http://192.168.4.1/led/yellow/off");
+                    if(texto.get(0).contains("ula")){
+                        new GetMethodDemo().execute("http://192.168.4.1/p");
+                        command.setText(texto.get(0)+" - Comando 1");}
+                   else if(texto.get(0).contains("aix")){
+                        new GetMethodDemo().execute("http://192.168.4.1/a");
+                        command.setText(texto.get(0)+" - Comando 2");
+                    }
+                   else if(texto.get(0).contains("esquerd")){
+                        new GetMethodDemo().execute("http://192.168.4.1/e");
+                        command.setText(texto.get(0)+" - Comando 3");
+                    }
+                   else if(texto.get(0).contains("direit")){
+                        new GetMethodDemo().execute("http://192.168.4.1/d");
+                        command.setText(texto.get(0)+" - Comando 4");
+                    }
 
                 }
                 break;
